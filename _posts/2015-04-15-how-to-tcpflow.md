@@ -8,7 +8,7 @@ categories: jekyll update
 大家知道tcpdump 是一个很方便的抓包工具， 但是tcpdump是按照包为单位进行输出的，阅读起来不是很方便。  而tcpflow是面向tcp流的。 每个tcp传输会保存成一个文件，所以一个典型的tcp回话会产生两个文件，每个方向产生一个文件。 并且tcpflow还可以解析tcpdump保存的文件。
 
 ### 安装
-具体可以参考： https://github.com/simsong/tcpflow
+具体可以参考： [tcpflow github](https://github.com/simsong/tcpflow)
 
 
 ### 简单使用
@@ -24,14 +24,14 @@ categories: jekyll update
 	tcpflow -ci en0
 
 其中 -c 表示将报文直接打印在terminal中。不指定 -c 参数会将抓取的tcp报文保存在文件中。
--i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: https://github.com/simsong/tcpflow . 基本格式为：
+-i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: [tcpflow github](https://github.com/simsong/tcpflow) . 基本格式为：
 
 	[timestampT]sourceip.sourceport-destip.destport[--VLAN][cNNNN]
 
 * 读取已有的 pcap 文件
 
 在使用tcpdump， 或者 wireshark 抓得包的格式是`pcap`。 使用tcpflow也可以读取这些包得格式。
-这儿有一个我使用tcpdump 抓得包得格式： http://rwxf.qiniudn.com/test.pcap
+这儿有一个我使用tcpdump 抓得包得格式： [tcpdump pcap](http://rwxf.qiniudn.com/test.pcap)
 
 	tcpflow -cr test.pcap
 
@@ -49,7 +49,7 @@ categories: jekyll update
 
 * 使用表达式过滤抓包
 
-tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考：http://linux.die.net/man/7/pcap-filter 。 这里列集中常用的表达式：
+tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考[filter expression](http://linux.die.net/man/7/pcap-filter) 。 这里列集中常用的表达式：
 
 	过滤经过 192.168.1.202 的流量：
 	tcpflow -i any host 10.0.3.1

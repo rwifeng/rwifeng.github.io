@@ -64,7 +64,7 @@
   <p>大家知道tcpdump 是一个很方便的抓包工具， 但是tcpdump是按照包为单位进行输出的，阅读起来不是很方便。  而tcpflow是面向tcp流的。 每个tcp传输会保存成一个文件，所以一个典型的tcp回话会产生两个文件，每个方向产生一个文件。 并且tcpflow还可以解析tcpdump保存的文件。</p>
 
 <h3 id="section">安装</h3>
-<p>具体可以参考： https://github.com/simsong/tcpflow</p>
+<p>具体可以参考： <a href="https://github.com/simsong/tcpflow">tcpflow github</a></p>
 
 <h3 id="section-1">简单使用</h3>
 
@@ -80,7 +80,7 @@
 </code></pre>
 
 <p>其中 -c 表示将报文直接打印在terminal中。不指定 -c 参数会将抓取的tcp报文保存在文件中。
--i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: https://github.com/simsong/tcpflow . 基本格式为：</p>
+-i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: <a href="https://github.com/simsong/tcpflow">tcpflow github</a> . 基本格式为：</p>
 
 <pre><code>[timestampT]sourceip.sourceport-destip.destport[--VLAN][cNNNN]
 </code></pre>
@@ -90,7 +90,7 @@
 </ul>
 
 <p>在使用tcpdump， 或者 wireshark 抓得包的格式是<code>pcap</code>。 使用tcpflow也可以读取这些包得格式。
-这儿有一个我使用tcpdump 抓得包得格式： http://rwxf.qiniudn.com/test.pcap</p>
+这儿有一个我使用tcpdump 抓得包得格式： <a href="http://rwxf.qiniudn.com/test.pcap">tcpdump pcap</a></p>
 
 <pre><code>tcpflow -cr test.pcap
 </code></pre>
@@ -113,7 +113,7 @@
   <li>使用表达式过滤抓包</li>
 </ul>
 
-<p>tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考：http://linux.die.net/man/7/pcap-filter 。 这里列集中常用的表达式：</p>
+<p>tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考<a href="http://linux.die.net/man/7/pcap-filter">filter expression</a> 。 这里列集中常用的表达式：</p>
 
 <pre><code>过滤经过 192.168.1.202 的流量：
 tcpflow -i any host 10.0.3.1

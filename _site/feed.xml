@@ -11,7 +11,7 @@
         <description>&lt;p&gt;大家知道tcpdump 是一个很方便的抓包工具， 但是tcpdump是按照包为单位进行输出的，阅读起来不是很方便。  而tcpflow是面向tcp流的。 每个tcp传输会保存成一个文件，所以一个典型的tcp回话会产生两个文件，每个方向产生一个文件。 并且tcpflow还可以解析tcpdump保存的文件。&lt;/p&gt;
 
 &lt;h3 id=&quot;section&quot;&gt;安装&lt;/h3&gt;
-&lt;p&gt;具体可以参考： https://github.com/simsong/tcpflow&lt;/p&gt;
+&lt;p&gt;具体可以参考： &lt;a href=&quot;https://github.com/simsong/tcpflow&quot;&gt;tcpflow github&lt;/a&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;section-1&quot;&gt;简单使用&lt;/h3&gt;
 
@@ -27,7 +27,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;其中 -c 表示将报文直接打印在terminal中。不指定 -c 参数会将抓取的tcp报文保存在文件中。
--i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: https://github.com/simsong/tcpflow . 基本格式为：&lt;/p&gt;
+-i 表示你要监听的网络端口。 假如你不指定-c 参数， tcpflow会将每个tcp流的数据存储在他自己的文件中，其中文件的命名规则你可以参考: &lt;a href=&quot;https://github.com/simsong/tcpflow&quot;&gt;tcpflow github&lt;/a&gt; . 基本格式为：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;[timestampT]sourceip.sourceport-destip.destport[--VLAN][cNNNN]
 &lt;/code&gt;&lt;/pre&gt;
@@ -37,7 +37,7 @@
 &lt;/ul&gt;
 
 &lt;p&gt;在使用tcpdump， 或者 wireshark 抓得包的格式是&lt;code&gt;pcap&lt;/code&gt;。 使用tcpflow也可以读取这些包得格式。
-这儿有一个我使用tcpdump 抓得包得格式： http://rwxf.qiniudn.com/test.pcap&lt;/p&gt;
+这儿有一个我使用tcpdump 抓得包得格式： &lt;a href=&quot;http://rwxf.qiniudn.com/test.pcap&quot;&gt;tcpdump pcap&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;tcpflow -cr test.pcap
 &lt;/code&gt;&lt;/pre&gt;
@@ -60,7 +60,7 @@
   &lt;li&gt;使用表达式过滤抓包&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考：http://linux.die.net/man/7/pcap-filter 。 这里列集中常用的表达式：&lt;/p&gt;
+&lt;p&gt;tcpflow 也是支持表达式过滤的，格式和tcpdump一样，具体格式和对应参数你可以参考&lt;a href=&quot;http://linux.die.net/man/7/pcap-filter&quot;&gt;filter expression&lt;/a&gt; 。 这里列集中常用的表达式：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;过滤经过 192.168.1.202 的流量：
 tcpflow -i any host 10.0.3.1
