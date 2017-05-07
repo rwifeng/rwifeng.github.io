@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Welcome to Jekyll!</title>
+    <title>dns 介绍</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="no dangers no wonders">
-    <link rel="canonical" href="http://localhost:4000/jekyll/update/2014/06/21/welcome-to-jekyll/">
+    <link rel="canonical" href="http://localhost:4000/jekyll/update/2015/06/01/dns-introduce/">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
@@ -56,23 +56,65 @@
       <div class="post">
 
   <header class="post-header">
-    <h1>Welcome to Jekyll!</h1>
-    <p class="meta">Jun 21, 2014</p>
+    <h1>dns 介绍</h1>
+    <p class="meta">Jun 1, 2015</p>
   </header>
 
   <article class="post-content">
-  <p>You’ll find this post in your <code class="highlighter-rouge">_posts</code> directory - edit this post and re-build (or run with the <code class="highlighter-rouge">-w</code> switch) to see your changes!
-To add new posts, simply add a file in the <code class="highlighter-rouge">_posts</code> directory that follows the convention: YYYY-MM-DD-name-of-post.ext.</p>
+  <p>DNS(Domain Name System)是一个基于TCP/IP应用程序的分布式数据库， 他提供主机名字到ip地址之间的转换。</p>
 
-<p>Jekyll also offers powerful support for code snippets:</p>
+<h3 id="section">结构</h3>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
-<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
+<h4 id="dns">DNS的层次组织：</h4>
+<ul>
+  <li>QFNA  – Full Qualified Domain Name</li>
+  <li>xxx.in-addr.arpa</li>
+</ul>
 
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>.</p>
+<h3 id="section-1">协议</h3>
+
+<h4 id="dns-">DNS 查询和响应的一般格式:</h4>
+
+<ul>
+  <li>
+    <p>dig 查询:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>  dig www.qiniu.com
+
+  ; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; www.qiniu.com
+  ;; global options: +cmd
+  ;; Got answer:
+  ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 56934
+  ;; flags: qr rd ra; QUERY: 1, ANSWER: 7, AUTHORITY: 0, ADDITIONAL: 0
+
+  ;; QUESTION SECTION:
+  ;www.qiniu.com.			IN	A
+
+  ;; ANSWER SECTION:
+  www.qiniu.com.		515	IN	CNAME	www.qiniu.com.wscdns.com.
+  www.qiniu.com.wscdns.com. 515	IN	CNAME	qiniu.xdwscache.glb0.lxdns.com.
+  qiniu.xdwscache.glb0.lxdns.com.	30 IN	A	218.92.227.121
+  qiniu.xdwscache.glb0.lxdns.com.	30 IN	A	222.186.132.79
+  qiniu.xdwscache.glb0.lxdns.com.	30 IN	A	58.222.19.61
+  qiniu.xdwscache.glb0.lxdns.com.	30 IN	A	180.97.211.38
+  qiniu.xdwscache.glb0.lxdns.com.	30 IN	A	58.221.78.105
+
+  ;; Query time: 13 msec
+  ;; SERVER: 114.114.114.114#53(114.114.114.114)
+  ;; WHEN: Tue Jun  2 17:08:28 2015
+  ;; MSG SIZE  rcvd: 187
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>tcpdump <code class="highlighter-rouge">sudo tcpdump -i all host 114.114.114.114</code>包：</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>  17:08:28.438644 IP 192.168.200.178.61149 &gt; public1.114dns.com.domain: 56934+ A? www.qiniu.com. (31)
+  17:08:28.449578 IP public1.114dns.com.domain &gt; 192.168.200.178.61149: 56934 7/0/0 CNAME www.qiniu.com.wscdns.com., CNAME qiniu.xdwscache.glb0.lxdns.com., A 218.92.227.121, A 222.186.132.79, A 58.222.19.61, A 180.97.211.38, A 58.221.78.105 (187)
+</code></pre>
+    </div>
+  </li>
+</ul>
 
 
   </article>

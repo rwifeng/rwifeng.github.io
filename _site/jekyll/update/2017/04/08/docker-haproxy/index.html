@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Welcome to Jekyll!</title>
+    <title>docker haproxy</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="no dangers no wonders">
-    <link rel="canonical" href="http://localhost:4000/jekyll/update/2014/06/21/welcome-to-jekyll/">
+    <link rel="canonical" href="http://localhost:4000/jekyll/update/2017/04/08/docker-haproxy/">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
@@ -56,24 +56,111 @@
       <div class="post">
 
   <header class="post-header">
-    <h1>Welcome to Jekyll!</h1>
-    <p class="meta">Jun 21, 2014</p>
+    <h1>docker haproxy</h1>
+    <p class="meta">Apr 8, 2017</p>
   </header>
 
   <article class="post-content">
-  <p>You’ll find this post in your <code class="highlighter-rouge">_posts</code> directory - edit this post and re-build (or run with the <code class="highlighter-rouge">-w</code> switch) to see your changes!
-To add new posts, simply add a file in the <code class="highlighter-rouge">_posts</code> directory that follows the convention: YYYY-MM-DD-name-of-post.ext.</p>
+  <p>本次介绍下怎么通过设置一个haproxy代理来上传到七牛云</p>
 
-<p>Jekyll also offers powerful support for code snippets:</p>
+<p>Dockerfile:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
-<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
+<div class="highlighter-rouge"><pre class="highlight"><code>FROM haproxy:1.7
+COPY haproxy-up.cfg /usr/local/etc/haproxy/haproxy.cfg
+</code></pre>
+</div>
 
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>.</p>
+<p>我们看下haproxy的配置文件 haproxy-up.cfg</p>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>global
+    daemon
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend http-in
+    bind *:80
+    http-response add-header X-Up-Server %b/%s
+    default_backend servers
+
+backend servers
+    http-request set-header Host up.qiniu.com
+    timeout http-keep-alive 3000
+    server svr-up up.qiniu.com:80
+</code></pre>
+</div>
+
+<p>然后我们构建一个docker镜像：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$docker build . -t haproxy-up
+</code></pre>
+</div>
+
+<p>然后将该镜像推送到七牛：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$kirk images push haproxy-up
+</code></pre>
+</div>
+
+<p>接下来我们我们在七牛将代理服务启动起来：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$kirk services run -i "rwifeng/haproxy-up:latest" haproxy-up
+</code></pre>
+</div>
+
+<p>然后创建一个公网ip映射到我们的代理服务：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$kirk maps set-port 61.153.154.165:80 --proto tcp -b "default/haproxy-up" --backend-port 80
+</code></pre>
+</div>
+
+<p>现在一个完整的代理服务跑起来了， 接下来我们测试下，通过这个服务上传一个字符串到七牛：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>curl -v 61.153.154.165 -F"token=xozWSPMxkMjIVoHg2JyXq4-7-oJaEADLOKHVR0vU:nQcJ-8hxWl7gRB0W8b4GXEomi1M=:eyJzY29wZSI6Impzc2RrIiwiZGVhZGxpbmUiOjE0OTE2NTA5NDl9" -F'file=abc'
+* Rebuilt URL to: 61.153.154.165/
+*   Trying 61.153.154.165...
+* TCP_NODELAY set
+* Connected to 61.153.154.165 (61.153.154.165) port 80 (#0)
+&gt; POST / HTTP/1.1
+&gt; Host: 61.153.154.165
+&gt; User-Agent: curl/7.52.1
+&gt; Accept: */*
+&gt; Content-Length: 358
+&gt; Expect: 100-continue
+&gt; Content-Type: multipart/form-data; boundary=------------------------1a7cb3f6d08dc5ee
+&gt;
+&lt; HTTP/1.1 100 Continue
+&lt; HTTP/1.1 200 OK
+&lt; Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size
+&lt; Access-Control-Allow-Methods: OPTIONS, HEAD, POST
+&lt; Access-Control-Allow-Origin: *
+&lt; Access-Control-Expose-Headers: X-Log, X-Reqid
+&lt; Access-Control-Max-Age: 2592000
+&lt; Cache-Control: no-store, no-cache, must-revalidate
+&lt; Content-Length: 76
+&lt; Content-Type: application/json
+&lt; Date: Sat, 08 Apr 2017 10:40:00 GMT
+&lt; Pragma: no-cache
+&lt; Server: nginx/1.10.2
+&lt; X-Content-Type-Options: nosniff
+&lt; X-From-Pod: 192.168.160.96
+&lt; X-Log: body;s.ph;s.put.tw;s.put.tr;s.put.tw;s.put.tr;s.ph;s.put.tw;s.put.tr;s.ph;PFDS;PFDS;PFDS:1;rs31_1.sel/not found;rdb.g;bs.r.39.224.43702764868;DBD;v4.get:1;rwro.ins:2/same entry;rs31_1.sel/not found;rdb.g:1;bs.r.39.224.43702764868;DBD:1;v4.get:1;rwro.get:2;MQ;RS.not:;RS:5;rs.put:12;rs-upload.putFile:14;UP:23;UP:24;audit-10.131.214.133:40
+&lt; X-Reqid: GgAAAE107P7zZbMU
+&lt; X-Reqid: GgAAAE107P7zZbMU
+&lt; X-Reqid: GgAAAE107P7zZbMU
+&lt; X-Up-Server: servers/svr-up
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host 61.153.154.165 left intact
+{"hash":"FqmZPjZHBoFquj4lcXhQwmyc0Nid","key":"FqmZPjZHBoFquj4lcXhQwmyc0Nid"}%
+</code></pre>
+</div>
+
+<p>测试成功， 当然这个只是一个简单的demo， 你可以基于这个做很多事情。 或者自己制作其他更有意思的服务。</p>
 
   </article>
 

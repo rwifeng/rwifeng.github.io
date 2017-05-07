@@ -11,17 +11,12 @@ DNS(Domain Name System)是一个基于TCP/IP应用程序的分布式数据库，
 ### 结构
 
 #### DNS的层次组织：
-![DNS的层次组织](http://rwxf.qiniug.com/DNS_architecture.jpg)
-
 * QFNA  -- Full Qualified Domain Name
 * xxx.in-addr.arpa
 
 ### 协议
 
 #### DNS 查询和响应的一般格式:
-![DNS 查询和响应的一般格式](http://rwxf.qiniug.com/DNS_protocol.jpg)
-
-
 
 
 * dig 查询:
@@ -53,6 +48,7 @@ DNS(Domain Name System)是一个基于TCP/IP应用程序的分布式数据库，
 
 
 * tcpdump `sudo tcpdump -i all host 114.114.114.114`包：
+
 
 		17:08:28.438644 IP 192.168.200.178.61149 > public1.114dns.com.domain: 56934+ A? www.qiniu.com. (31)
 		17:08:28.449578 IP public1.114dns.com.domain > 192.168.200.178.61149: 56934 7/0/0 CNAME www.qiniu.com.wscdns.com., CNAME qiniu.xdwscache.glb0.lxdns.com., A 218.92.227.121, A 222.186.132.79, A 58.222.19.61, A 180.97.211.38, A 58.221.78.105 (187)
